@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitcoin_ticker/coin_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,27 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+
+  List<Text> getCupertinoPickerItems() {
+    List<Text> pickerList = [];
+    for (String currency in currenciesList) {
+      pickerList.add(Text(currency));
+    }
+
+    return pickerList;
+  }
+
+  CupertinoPicker getCupertinoPicker() {
+    return CupertinoPicker(
+      itemExtent: 32.0,
+      children: getCupertinoPickerItems(),
+      onSelectedItemChanged: (selectIndex) {
+        setState(() {
+          selectedCurrency = currenciesList[selectIndex];
+        });
+      },
+    );
+  }
 
   List<DropdownMenuItem<String>> getDropdownItems() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -22,6 +45,26 @@ class _PriceScreenState extends State<PriceScreen> {
       dropdownItems.add(newItem);
     }
     return dropdownItems;
+  }
+
+  DropdownButton<String> getAndroidDropdownButton() {
+    return DropdownButton<String>(
+      value: selectedCurrency,
+      items: this.getDropdownItems(),
+      onChanged: (value) {
+        setState(() {
+          selectedCurrency = value;
+        });
+      },
+    );
+  }
+
+  getPicker() {
+    if (Platform.isIOS) {
+      return getCupertinoPicker();
+    } else {
+      return getAndroidDropdownButton();
+    }
   }
 
   @override
@@ -60,43 +103,10 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: buildIosDropdownButton(),
+            child: getPicker(),
           ),
         ],
       ),
-    );
-  }
-
-  CupertinoPicker buildIosDropdownButton() {
-    return CupertinoPicker(
-      itemExtent: 32.0,
-      children: iosList(),
-      onSelectedItemChanged: (selectIndex) {
-        setState(() {
-          selectedCurrency = currenciesList[selectIndex];
-        });
-      },
-    );
-  }
-
-  List<Text> iosList() {
-    List<Text> pickerList = [];
-    for (String currency in currenciesList) {
-      pickerList.add(Text(currency));
-    }
-
-    return pickerList;
-  }
-
-  DropdownButton<String> buildAndroidDropdownButton() {
-    return DropdownButton<String>(
-      value: selectedCurrency,
-      items: this.getDropdownItems(),
-      onChanged: (value) {
-        setState(() {
-          selectedCurrency = value;
-        });
-      },
     );
   }
 }
