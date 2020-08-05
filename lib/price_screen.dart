@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bitcoin_ticker/coin_data.dart';
+import 'package:bitcoin_ticker/network.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,11 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+
+  @override
+  void initState() {
+    resultGet();
+  }
 
   List<Text> getCupertinoPickerItems() {
     List<Text> pickerList = [];
@@ -102,5 +108,10 @@ class _PriceScreenState extends State<PriceScreen> {
         ],
       ),
     );
+  }
+
+  Future<dynamic> resultGet() async {
+    var result = await Network().fetchCoin();
+    return print(result.body);
   }
 }
