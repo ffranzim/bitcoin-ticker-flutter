@@ -23,4 +23,16 @@ class Network {
       print(response.statusCode);
     }
   }
+
+  Future<dynamic> fetchCoinsForCurrency(String selectedCurrency) async {
+    print(kUrlBase);
+    http.Response response =
+        await http.get('$kUrlBase/$selectedCurrency', headers: kHeaders);
+    if (response.statusCode == 200) {
+      String data = response.body;
+      return jsonDecode(data);
+    } else {
+      print(response.statusCode);
+    }
+  }
 }

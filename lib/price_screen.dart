@@ -19,7 +19,8 @@ class _PriceScreenState extends State<PriceScreen> {
   @override
   void initState() {
     super.initState();
-    getValueCoinCurrency();
+//    getValueCoinCurrency();
+    getValueCoinCurrencyOneRequest();
   }
 
   List<Text> getCupertinoPickerItems() {
@@ -38,7 +39,8 @@ class _PriceScreenState extends State<PriceScreen> {
       onSelectedItemChanged: (selectIndex) {
         setState(() {
           selectedCurrency = currenciesList[selectIndex];
-          getValueCoinCurrency();
+//          getValueCoinCurrency();
+          getValueCoinCurrencyOneRequest();
         });
       },
     );
@@ -66,6 +68,7 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectedCurrency = value;
           getValueCoinCurrency();
+//          getValueCoinCurrencyOneRequest();
         });
       },
     );
@@ -115,7 +118,7 @@ class _PriceScreenState extends State<PriceScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
           child: Text(
-            '1 coin = $value $currency',
+            '1 $coin = $value $currency',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.0,
@@ -145,6 +148,40 @@ class _PriceScreenState extends State<PriceScreen> {
 
       double rateLTC = resultLTC['rate'];
       valueSelectedCurrencyLTC = rateLTC.toStringAsFixed(2).toString();
+    });
+  }
+
+  Future<void> getValueCoinCurrencyOneRequest() async {
+    valueSelectedCurrencyBTC = '?';
+    valueSelectedCurrencyETH = '?';
+    valueSelectedCurrencyLTC = '?';
+
+    double valueBTC = 0.0;
+    double valueETH = 0.0;
+    double valueLTC = 0.0;
+
+    var result = await Network().fetchCoinsForCurrency(selectedCurrency);
+
+    List rates = result['rates'];
+
+    rates.forEach((element) {
+      if (element['asset_id_quote'] == 'BTC') {
+        valueBTC = element['rate'];
+      }
+      if (element['asset_id_quote'] == 'ETH') {
+        valueETH = element['rate'];
+      }
+      if (element['asset_id_quote'] == 'LTC') {
+        valueLTC = element['rate'];
+      }
+    });
+
+    print(valueBTC);
+
+    setState(() {
+      valueSelectedCurrencyBTC = valueBTC.toStringAsFixed(2).toString();
+      valueSelectedCurrencyETH = valueETH.toStringAsFixed(2).toString();
+      valueSelectedCurrencyLTC = valueLTC.toStringAsFixed(2).toString();
     });
   }
 }
