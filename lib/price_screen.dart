@@ -39,8 +39,8 @@ class _PriceScreenState extends State<PriceScreen> {
       onSelectedItemChanged: (selectIndex) {
         setState(() {
           selectedCurrency = currenciesList[selectIndex];
-//          getValueCoinCurrency();
-          getValueCoinCurrencyOneRequest();
+          getValueCoinCurrency();
+//          getValueCoinCurrencyOneRequest();
         });
       },
     );
